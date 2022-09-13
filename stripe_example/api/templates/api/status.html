@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}
+<title>Thanks for your order!</title>
+{% endblock %}
+{% block content %}
+<p id="message"></p>
+<script type="text/javascript">
+    set_status('{{ pk }}')
+</script>
+{% endblock %}

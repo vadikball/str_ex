@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+{% if item %}
+    <h1>{{ item.name }}</h1>
+    <p>{{ item.description }}</p>
+    <p>{{ item.cost }}</p>
+    <button type="button" onclick="redirection_event('{{ item.id }}')" id="buy-button">Buy</button>
+{% endif %}
+{% endblock %}
+

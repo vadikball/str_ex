@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        {% block title %}
+        {% if item %}
+        <title>Buy {{ item.name }}</title>
+        {% else %}
+        <title>Main</title>
+        {% endif %}
+        {% endblock %}
+        <script src="https://js.stripe.com/v3/" type="text/javascript"></script>
+        {% load static %}
+
+        <script
+          type="text/javascript"
+          src="{% static 'api/script.js' %}"
+          crossorigin="anonymous"></script>
+        <script type="text/javascript">
+
+        </script>
+    </head>
+</html>
+<body>
+    <div class="container">
+    {% block content %}
+    {% endblock %}
+    </div>
+</body>
