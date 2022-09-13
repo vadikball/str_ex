@@ -24,6 +24,6 @@ ENV APP_URL=${APP_URL:-http://localhost:8000}
 
 ARG DJANGO_SECRET
 
-ENV DJANGO_SECRET=${DJANGO_SECRET:YOUR-DJANGO_SECRET}
+ENV DJANGO_SECRET=${DJANGO_SECRET:-YOUR-DJANGO_SECRET}
 
 CMD ["cd", "stripe_example", "&&" ,"python3", "manage.py", "runserver", "0.0.0.0:8000"]
