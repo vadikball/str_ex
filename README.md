@@ -22,3 +22,7 @@ PUB_KEY и STRIPE_SECRET_KEY - Пара ключей с Stripe.dashboard
 * pub_key/ Возвращает JSON с {'pub_key': <PUB_KEY>} где PUB_KEY это публичный ключ с Stripe.dashboard
 * success/ или success/<int> или intent/<int>/status - Возвращает HTML с информацией после оплаты
 * intent/<int>/status/success - При обращении обновляет объект _Order_ для оплаченного заказа, присваивая ему статус **Оплаченного заказа**
+---
+Автотесты не написаны
+---
+Стили не написаны
