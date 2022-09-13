@@ -1,6 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
 <div>
-    SOME
+    <h1>
+        Тестовая интеграция с Stripe
+    </h1>
+    <p>
+        При развёртывании приложения с помощью Dockerfile в репозитории, обратите внимание, что нужно передать аргументы DJANGO_SECRET, PUB_KEY, STRIPE_SECRET_KEY.
+    </p>
+    <p>
+        Также, необходимо провести миграцию после запуска контейнера и создать superuser.
+    </p>
+    <p>
+        PUB_KEY и STRIPE_SECRET_KEY - Пара ключей с Stripe.dashboard
+    </p>
+    <h1>При работе с сайтом:</h1>
+    <ul>
+        <li>На главной странице - повтор текста этого README файла</li>
+        <li>Создавать или редактировать записи в базе данных возможно только через admin панель</li>
+        <li>Чтобы наполнить заказ товарами, необходимо создать Order, затем через создание OrderPosition привязать товары к нужному заказу</li>
+    </ul>
+    <h1>Список и описание url:</h1>
+    <ul>
+        <li>/item/ - Возвращает HTML с информацией о товаре и кнопкой "Buy"</li>
+        <li>/buy/ - Возвращает JSON объекта stripe.checkout.Session, необходимый для перехода на платежную форму Stripe для оплаты товара</li>
+        <li>/order/ - Возвращает HTML с информацией о заказе и кнопкой "Buy" или "Payment Intent". При нажатии на "Buy" произойдет редирект на платежную форму Stripe, созданную с помощью stripe.checkout.Session. При нажатии на "Payment Intent" появится платёжная форма, созданная с помощью stripe.PaymentIntent и clientSecret</li>
+        <li>/order/buy/ Возвращает JSON объекта stripe.checkout.Session, необходимый для перехода на платежную форму Stripe для оплаты заказа</li>
+        <li>intent/int:pk Возвращает JSON с clientSecret, что необходимо для создания платёжной формы через stripe.PaymentIntent для оплаты заказа</li>
+        <li>pub_key/ Возвращает JSON с {'pub_key': PUB_KEY} где PUB_KEY это публичный ключ с Stripe.dashboard</li>
+        <li>success/ или success/ или intent//status - Возвращает HTML с информацией после оплаты</li>
+        <li>intent//status/success - При обращении обновляет объект Order для оплаченного заказа, присваивая ему статус Оплаченного заказа</li>
+    </ul>
+    <h1>Автотесты не написаны</h1>
+    <h1>Стили не написаны</h1>
 </div>
 {% endblock %}

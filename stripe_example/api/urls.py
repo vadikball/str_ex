@@ -7,7 +7,7 @@ urlpatterns = [
     path('', views.MainPage.as_view(), name='all'),
     path('buy/<int:pk>', views.BuyItem.as_view()),
     path('item/<int:pk>', views.GetItem.as_view()),
-    path('success', views.SuccessPage.as_view()),
+    path('success/', views.SuccessPage.as_view()),
     path('success/<int:pk>', views.SuccessPageOrder.as_view()),
     path('order/<int:pk>', views.GetOrder.as_view()),
     path('order/buy/<int:pk>', views.BuyOrder.as_view()),
