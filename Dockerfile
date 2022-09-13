@@ -26,4 +26,4 @@ ARG DJANGO_SECRET
 
 ENV DJANGO_SECRET=${DJANGO_SECRET:-YOUR-DJANGO_SECRET}
 
-CMD ["python3", "str-ex/manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python3", "stripe_example/manage.py", "runserver", "0.0.0.0:8000"]
