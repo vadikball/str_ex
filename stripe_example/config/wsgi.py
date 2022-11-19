@@ -10,6 +10,6 @@ dotenv.read_dotenv(
     )
 )
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'stripe_example.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
 application = get_wsgi_application()
