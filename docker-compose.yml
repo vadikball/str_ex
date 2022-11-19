@@ -1,0 +1,36 @@
+version: '3'
+services:
+  static:
+    build: ./stripe_example
+    image: stripe_example
+    command: sh -c "sudo chown -R $USER $(pwd)
+      && python3 manage.py collectstatic -c --no-input"
+    env_file: ./stripe_example/.env
+    volumes:
+      - static_content:/stripe_example/static:rw
+  database:
+    image: postgres
+    env_file: .db.env.sample
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    depends on:
+      - static
+  web:
+    image: stripe_example
+    env_file: ./stripe_example/.env
+    depends_on:
+      - database
+    volumes:
+      - static_content:/stripe_example/static:rw
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./configs:/etc/nginx/conf.d:ro
+      - static_content:/var/www/static:ro
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+volumes:
+  static_content:
