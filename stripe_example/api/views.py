@@ -6,8 +6,6 @@ import stripe
 import os
 from typing import Union, List
 
-stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
-
 
 def _get_amount(positions: List[models.OrderPosition], order: models.Order) -> int:
     """ Подсчитывает итог заказа """
@@ -20,14 +18,24 @@ def _get_amount(positions: List[models.OrderPosition], order: models.Order) -> i
     return amount
 
 
-def _line_items_prep(input_object: Union[models.Item, List[models.OrderPosition]]) -> list:
+def _line_items_prep(input_object: Union[models.Item, models.Order]) -> list:
     """ Подготавливает список line_items для создания stripe.checkout.Session """
     if isinstance(input_object, models.Item):
         var_tuple = ((input_object.name, int(input_object.price * 100), 1,), )
     else:
-        var_tuple = tuple((position.item.name, int(position.item.price*100), position.quantity, ) for position in input_object)
+        var_tuple = tuple(
+            (
+                pos.item.name,
+                int(pos.item.price*100),
+                pos.quantity,
+            ) for pos in input_object.order_position
+        )
 
-    line_items = [{
+    additional_info = {}
+    if isinstance(input_object, models.Order) and input_object.tax is not None:
+        additional_info = {'tax_rates': [input_object.tax.stripe_tax_id]}
+
+    line_items = [additional_info.update({
         'price_data': {
             'currency': 'usd',
             'product_data': {
@@ -36,7 +44,7 @@ def _line_items_prep(input_object: Union[models.Item, List[models.OrderPosition]
             'unit_amount': pos[1],
         },
         'quantity': pos[2],
-    } for pos in var_tuple]
+    }) for pos in var_tuple]
 
     return line_items
 
@@ -68,7 +76,6 @@ class BuyItem(View):
 
         """ :return JSON объект с созданной stripe.checkout.Session """
         item = get_object_or_404(self.model, id=pk)
-        print(request)
 
         session = stripe.checkout.Session.create(
             line_items=_line_items_prep(item),
@@ -130,7 +137,7 @@ class BuyOrder(View):
         if order.paid:
             return render(request, SuccessPage.template_name)
         else:
-            positions = list(models.OrderPosition.objects.filter(order=order))
+            positions = list(self.model.objects.select_related().prefetch_related().filter(order=order))
 
             session = stripe.checkout.Session.create(
                 line_items=_line_items_prep(positions),
