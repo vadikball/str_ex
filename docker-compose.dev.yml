@@ -14,7 +14,7 @@ services:
       - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    depends on:
+    depends_on:
       - static
   web:
     image: stripe_example
@@ -37,3 +37,4 @@ services:
       - "80:80"
 volumes:
   static_content:
+  pgdata:
