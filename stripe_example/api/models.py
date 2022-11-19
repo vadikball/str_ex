@@ -1,61 +1,52 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.contrib import admin
-import stripe
-
-# Create your models here.
-
-
-class DiscountAdmin(admin.ModelAdmin):
-    fields = ['name', 'percentage']
-
-    def save_model(self, request, obj, form, change):
-
-        coupon = stripe.Coupon.create(percent_off=obj.percentage, duration="once")
-
-        obj.stripe_coupon_id = coupon.id
-        return super(DiscountAdmin, self).save_model(request, obj, form, change)
 
 
 class Discount(models.Model):
     name = models.CharField(max_length=50)
-    percentage = models.PositiveIntegerField(default=None, validators=[MaxValueValidator(99), MinValueValidator(0)], help_text='0 to 99%')
+    percentage = models.PositiveIntegerField(
+        default=None,
+        validators=[MaxValueValidator(99), MinValueValidator(0)],
+        help_text='0 to 99%')
     stripe_coupon_id = models.CharField(max_length=200)
 
     def __str__(self):
         return f'{self.name} {self.percentage}%'
 
-
-class TaxAdmin(admin.ModelAdmin):
-    fields = ['name', 'percentage']
-
-    def save_model(self, request, obj, form, change):
-
-        tax_rate = stripe.TaxRate.create(
-            display_name=obj.name,
-            inclusive=False,
-            percentage=obj.percentage,
-        )
-        obj.stripe_tax_id = tax_rate.id
-        return super(TaxAdmin, self).save_model(request, obj, form, change)
+    class Meta:
+        db_table = "content\".\"discount"
 
 
 class Tax(models.Model):
     name = models.CharField(max_length=20)
-    percentage = models.PositiveIntegerField(default=None, validators=[MaxValueValidator(99), MinValueValidator(0)], help_text='0 to 99%')
+    percentage = models.PositiveIntegerField(
+        default=20,
+        validators=[MaxValueValidator(99), MinValueValidator(0)],
+        help_text='0 to 99%'
+    )
     stripe_tax_id = models.CharField(max_length=200)
+    inclusive = models.BooleanField(
+        default=False,
+        help_text='True for inclusion tax in price'
+    )
 
     def __str__(self):
         return f'{self.name} {self.percentage}%'
+
+    class Meta:
+        db_table = "content\".\"tax"
 
 
 class Item(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
-    price = models.DecimalField(max_digits=3, decimal_places=1, validators=[MinValueValidator(1)])
+    price = models.DecimalField(max_digits=2, decimal_places=1, validators=[MinValueValidator(1)])
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        db_table = "content\".\"item"
 
 
 class Order(models.Model):
@@ -67,6 +58,9 @@ class Order(models.Model):
     def __str__(self):
         return f"Заказ: {self.id}"
 
+    class Meta:
+        db_table = "content\".\"order"
+
 
 class OrderPosition(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -77,4 +71,5 @@ class OrderPosition(models.Model):
         return f"Заказ: {self.order.id} Предмет: {self.item.name} {self.quantity} шт."
 
     class Meta:
+        db_table = "content\".\"order_position"
         unique_together = ('order', 'item')
