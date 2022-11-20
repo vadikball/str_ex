@@ -15,4 +15,6 @@ urlpatterns = [
     path('pub_key/', views.PubKey.as_view()),
     path('intent/<int:pk>/status', views.IntentStatus.as_view()),
     path('intent/<int:pk>/status/success', views.IntentStatusSuccess.as_view()),
+    path('catalog/', views.ItemCatalog.as_view(), name='catalog'),
+    path('scrap-it/', views.GetTestData.as_view()),
 ]

@@ -33,6 +33,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=50)),
                 ('description', models.CharField(max_length=200)),
                 ('price', models.DecimalField(decimal_places=1, max_digits=2, validators=[django.core.validators.MinValueValidator(1)])),
+                ('src_url', models.URLField(default=None, null=True, blank=True))
             ],
             options={
                 'db_table': 'content"."item',

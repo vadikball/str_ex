@@ -1,7 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import View
-from . import models
+from django.views.generic.list import ListView
+from django.views.generic.base import RedirectView
+from . import models, utils
 from django.http import JsonResponse
+from django.urls import reverse_lazy
 import stripe
 import os
 from typing import Union, List
@@ -54,6 +57,24 @@ class MainPage(View):
 
     def get(self, request):
         return render(request, self.template_name)
+
+
+class ItemCatalog(ListView):
+    model = models.Item
+    template_name = 'api/item_list.html'
+    context_object_name = "item_list"
+    paginate_by = 30
+
+
+class GetTestData(RedirectView):
+
+    def get_redirect_url(self):
+        data = utils.get_data()
+        if data:
+            models.Item.objects.bulk_create([
+                models.Item(name=item.name, price=item.price, url_src=item.photo) for item in data
+            ])
+        return reverse_lazy('catalog')
 
 
 class GetItem(View):

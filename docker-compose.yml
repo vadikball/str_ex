@@ -10,7 +10,7 @@ services:
       - static_content:/stripe_example/static:rw
   database:
     image: postgres
-    env_file: .db.env.sample
+    env_file: .db.env
     volumes:
       - pgdata:/var/lib/postgresql/data
     depends on:
