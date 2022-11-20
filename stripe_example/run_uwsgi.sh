@@ -8,4 +8,4 @@ done
 
 python3 manage.py migrate
 
-uwsgi --strict --ini /opt/app/movies_admin/uwsgi/uwsgi.ini
+uwsgi --strict --ini /stripe_example/uwsgi/uwsgi.ini
