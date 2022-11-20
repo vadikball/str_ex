@@ -30,9 +30,9 @@ class Migration(migrations.Migration):
             name='Item',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
-                ('description', models.CharField(max_length=200)),
-                ('price', models.DecimalField(decimal_places=1, max_digits=2, validators=[django.core.validators.MinValueValidator(1)])),
+                ('name', models.CharField(max_length=200)),
+                ('description', models.CharField(max_length=200, default=None, null=True, blank=True)),
+                ('price', models.DecimalField(decimal_places=0, max_digits=2, validators=[django.core.validators.MinValueValidator(1)])),
                 ('src_url', models.URLField(default=None, null=True, blank=True))
             ],
             options={

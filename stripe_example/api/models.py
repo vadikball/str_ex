@@ -38,9 +38,9 @@ class Tax(models.Model):
 
 
 class Item(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=200)
     description = models.CharField(max_length=200, default=None, null=True, blank=True)
-    price = models.DecimalField(max_digits=2, decimal_places=1, validators=[MinValueValidator(1)])
+    price = models.DecimalField(max_digits=2, decimal_places=0, validators=[MinValueValidator(1)])
     src_url = models.URLField(default=None, null=True, blank=True, help_text='link to image file')
 
     def __str__(self):

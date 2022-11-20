@@ -31,32 +31,22 @@ def scrap_vse_mayki(driver: webdriver.Chrome):
             price = int(price.text[:-2]) // 100
             name = shirt.find(class_='_38-vDi9W').text
             shirts_info.append(ItemSchema(
-                photo=photo.src, price=price, name=name.text
+                photo=photo, price=price, name=name
             ))
+
     return shirts_info
 
 
 def get_data() -> Optional[list[ItemSchema]]:
+    logger.info('start scrapping')
     options = Options()
     options.headless = True
     driver = webdriver.Chrome(options=options, executable_path='./chromedriver')
-    try:
-        data = scrap_vse_mayki(driver)
-    except Exception as exc:
-        logger.exception(traceback.format_exc())
-    else:
-        return data
-    finally:
-        driver.quit()
-
-
-#         создать объект модель
-# сохранить объект/балк объектов
-
-
-
-# pprint.pprint(some)
-
+    data = scrap_vse_mayki(driver)
+    if data:
+        print('success')
+    driver.quit()
+    return data
 
 
 # sudo apt install chromium-driver

@@ -72,9 +72,9 @@ class GetTestData(RedirectView):
         data = utils.get_data()
         if data:
             models.Item.objects.bulk_create([
-                models.Item(name=item.name, price=item.price, url_src=item.photo) for item in data
+                models.Item(name=item.name, price=item.price, src_url=item.photo) for item in data
             ])
-        return reverse_lazy('catalog')
+        return reverse_lazy('api:catalog')
 
 
 class GetItem(View):
