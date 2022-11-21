@@ -1,17 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
 {% if order %}
-<h1>{{ order.id }}</h1>
+<h1>Заказ номер {{ order.id }}</h1>
     {% for position in positions %}
     <div>
+        {% if position.item.src_url %}
+        <img src="{{ position.item.src_url }}">
+        {% endif %}
         <h1>Товар: {{ position.item.name }}</h1>
+        {% if position.item.description %}
         <p>Описание: {{ position.item.description }}</p>
+        {% endif %}
         <p>Стоимость: {{ position.item.price }}</p>
         <p>Количество: {{ position.quantity }}</p>
     </div>
     {% endfor %}
     <h1>Общая стоимость: {{ total }}</h1>
+    {% if total_flag %}
+    <p>Оплата через Session:</p>
     <button type="button" onclick="order_redirection('{{ order.id }}')" id="buy-button">Buy</button>
+    <p>Оплата через PaymentIntent:</p>
     <form id="payment-form">
       <div id="payment-element">
         <!-- Elements will create form elements here -->
@@ -24,5 +32,8 @@
     <script>
         let return_url = '{{ return_url }}'
     </script>
+    {% else %}
+    <div>Сумма заказа должна быть больше или равно 1</div>
+    {% endif %}
 {% endif %}
 {% endblock %}

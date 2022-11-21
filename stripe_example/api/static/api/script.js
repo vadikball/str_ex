@@ -1,5 +1,5 @@
 let stripe = (async () => {
-    const response = await fetch('/pub_key/', {method: 'GET'})
+    const response = await fetch('/api/v1/pub_key/', {method: 'GET'})
     let pub = await response.json()
     let pub_key = await pub.pub_key
     return await Stripe(pub_key);
@@ -15,18 +15,18 @@ function format_response(response) {
 
 async function redirection_event(item_id) {
     stripe = await stripe.then(stripe => {return stripe});
-    await fetch(`/buy/${item_id}`, {method: 'GET'}).then(response => format_response(response)).then(session => stripe.redirectToCheckout({ sessionId: session.id }));
+    await fetch(`/api/v1/buy/${item_id}`, {method: 'GET'}).then(response => format_response(response)).then(session => stripe.redirectToCheckout({ sessionId: session.id }));
 };
 
 
 async function order_redirection(order_id) {
     stripe = await stripe.then(stripe => {return stripe});
-    await fetch(`/order/buy/${order_id}`, {method: 'GET'}).then(response => format_response(response)).then(session => stripe.redirectToCheckout({ sessionId: session.id }));
+    await fetch(`/api/v1/order/buy/${order_id}`, {method: 'GET'}).then(response => format_response(response)).then(session => stripe.redirectToCheckout({ sessionId: session.id }));
 };
 
 
 async function get_pub_key() {
-    const pub_key = await fetch('/pub_key/', {method: 'GET'}).then(response => format_response(response));
+    const pub_key = await fetch('/api/v1/pub_key/', {method: 'GET'}).then(response => format_response(response));
     return await pub_key.pub_key;
 };
 
@@ -41,7 +41,7 @@ async function get_secret_for_intent(order_id) {
         stripe = await stripe.then(stripe => {return stripe});
     } catch {};
 
-    const response = await fetch(`/intent/${order_id}`);
+    const response = await fetch(`/api/v1/intent/${order_id}`);
     const clientSecret = await response.json();
     await console.log(clientSecret)
     const options = {
@@ -108,7 +108,7 @@ async function set_status(order_id) {
         switch (paymentIntent.status) {
         case 'succeeded':
           message.innerText = 'Success! Payment received.';
-          fetch(`/intent/${order_id}/status/success`, {method: 'GET'})
+          fetch(`/api/v1/intent/${order_id}/status/success`, {method: 'GET'})
           break;
 
         case 'processing':

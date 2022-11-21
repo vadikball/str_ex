@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
-<div>
-    {% if item_list %}
-    <div> item_list </div>
-    {% for item in item_list %}
-        <div>
-            <img src="{{ item.src_url }}">
-            <p>{{ item.name }}</p>
-            <p>{{ item.price }}</p>
-            <p>{{ item.description }}</p>
-        </div>
-    {% endfor %}
-    {% else %}
-    <div> Нет объектов </div>
+
+{% if item_list %}
+{% for item in item_list %}
+<div class="col-md-3">
+    <img src="{{ item.src_url }}">
+    <p>{{ item.name|truncatechars:30 }}</p>
+    <p>Цена: {{ item.price }} $</p>
+    {% if item.description %}
+    <p>Описание: {{ item.description }}</p>
     {% endif %}
 </div>
+{% endfor %}
+{% else %}
+<div> Нет объектов </div>
+{% endif %}
+
 {% endblock %}

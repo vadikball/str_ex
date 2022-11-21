@@ -26,7 +26,7 @@ class Tax(models.Model):
     )
     stripe_tax_id = models.CharField(max_length=200)
     inclusive = models.BooleanField(
-        default=False,
+        default=True,
         help_text='True for inclusion tax in price'
     )
 
@@ -50,21 +50,8 @@ class Item(models.Model):
         db_table = "content\".\"item"
 
 
-class Order(models.Model):
-    order_position = models.ManyToManyField("self", through='OrderPosition')
-    discount = models.ForeignKey(Discount, on_delete=models.CASCADE, default=None, null=True, blank=True)
-    tax = models.ForeignKey(Tax, on_delete=models.CASCADE, default=None, null=True, blank=True)
-    paid = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"Заказ: {self.id}"
-
-    class Meta:
-        db_table = "content\".\"order"
-
-
 class OrderPosition(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey("Order", on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
 
@@ -74,3 +61,16 @@ class OrderPosition(models.Model):
     class Meta:
         db_table = "content\".\"order_position"
         unique_together = ('order', 'item')
+
+
+class Order(models.Model):
+    order_position = models.ManyToManyField('self', through='OrderPosition')
+    discount = models.ForeignKey(Discount, on_delete=models.CASCADE, default=None, null=True, blank=True)
+    tax = models.ForeignKey(Tax, on_delete=models.CASCADE, default=None, null=True, blank=True)
+    paid = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Заказ: {self.id}"
+
+    class Meta:
+        db_table = "content\".\"order"
