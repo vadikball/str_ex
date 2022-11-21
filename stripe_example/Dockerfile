@@ -20,7 +20,7 @@ RUN apt-get update \
 
 RUN apt install chromium -y
 
-RUN apt install chrome-driver -y
+RUN apt install chromium-driver -y
 
 COPY . .
 
