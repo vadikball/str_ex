@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+    {% if item_list %}
+    <div> item_list </div>
+    {% for item in item_list %}
+        <div>
+            <img src="{{ item.src_url }}">
+            <p>{{ item.name }}</p>
+            <p>{{ item.price }}</p>
+            <p>{{ item.description }}</p>
+        </div>
+    {% endfor %}
+    {% else %}
+    <div> None </div>
+    {% endif %}
+</div>
+{% endblock %}
