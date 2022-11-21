@@ -1,4 +1,5 @@
 import logging
+import os
 import traceback
 from typing import Optional
 
@@ -41,13 +42,14 @@ def get_data() -> Optional[list[ItemSchema]]:
     logger.info('start scrapping')
     options = Options()
     options.headless = True
-    driver = webdriver.Chrome(options=options, executable_path='./chromedriver')
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    chrome_prefs = dict()
+    options.experimental_options["prefs"] = chrome_prefs
+    chrome_prefs["profile.default_content_settings"] = {"images": 2}
+    driver = webdriver.Chrome(options=options, executable_path=os.environ.get('DRIVER_PATH', '/usr/bin/chromedriver'))
     data = scrap_vse_mayki(driver)
     if data:
         print('success')
     driver.quit()
     return data
-
-
-# sudo apt install chromium-driver
-# dir /usr/bin/chromedriver

@@ -77,6 +77,13 @@ class GetTestData(RedirectView):
         return reverse_lazy('api:catalog')
 
 
+class DeleteTestData(RedirectView):
+
+    def get_redirect_url(self):
+        models.Item.objects.all().delete()
+        return reverse_lazy('api:catalog')
+
+
 class GetItem(View):
     model = models.Item
     template_name = 'api/get_item.html'

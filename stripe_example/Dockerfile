@@ -18,6 +18,10 @@ RUN apt-get update \
   && apt-get install netcat gcc \
   && apt-get clean
 
+RUN apt install chromium -y
+
+RUN apt install chrome-driver -y
+
 COPY . .
 
 CMD ["sh", "run_uwsgi.sh"]
