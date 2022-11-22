@@ -19,6 +19,12 @@ class ItemSchema(BaseModel):
 
 
 def scrap_vse_mayki(driver: webdriver.Chrome):
+    """
+    Загружает страницы с контентом,
+    отбирает данные со страницы
+    и возвращает список сериализованных с помощью pydantic данных
+    """
+
     shirts_info = []
     for i in range(1, 4):
         driver.get(url + str(i))
@@ -38,6 +44,12 @@ def scrap_vse_mayki(driver: webdriver.Chrome):
 
 
 def get_data() -> Optional[list[ItemSchema]]:
+    """
+    Точка входа для процесса скраппинга,
+    возвращает список сериализованных с помощью pydantic данных
+    для создания новых Item.
+    """
+
     logger.info('start scrapping')
     options = Options()
     options.headless = True

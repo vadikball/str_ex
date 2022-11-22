@@ -1,28 +1,43 @@
 Тестовая интеграция с Stripe
+---
+Как развернуть сервис:
+---
+С помощью docker-compose файлов в репозитории:
+* Поместить файл .db.env в корень репозитория рядом с docker-compose файлами
+* Поместить файл .env в папку /stripe_example рядом с файлом manage.py
+* Заполнить файлы переменных окружения, как указано в файлах-примерах db.env.sample и dj.env.sample
+* Запустить докер в корне репозитория командой docker-compose up --build
+* Для запуска dev версии докера нужно поместить ваши ключи в файлы-примеры переменных окружения
+  и запустить докер docker-compose -f docker-compose.dev.yml up --build
+* Также, необходимо после запуска контейнера создать superuser 
+  -> docker exec -it <имя контейнера django сервиса> bash -> python3 manage.py createsuperuser.
 
-При развёртывании приложения с помощью Dockerfile в репозитории, обратите внимание, что нужно передать аргументы DJANGO_SECRET, PUB_KEY, STRIPE_SECRET_KEY.
----
-Также, необходимо провести миграцию после запуска контейнера и создать superuser.
----
-PUB_KEY и STRIPE_SECRET_KEY - Пара ключей с Stripe.dashboard
----
+Первый билд загружается не быстро, благодарю вас за терпение.
+
+
+
+PUB_KEY и STRIPE_SECRET_KEY - Пара ключей с Stripe.dashboard, APP_URL - url вебсервиса, используется для генерации сссылки возврата из платежной формы, DJANGO_SECRET - ключ для приложения django
+
 При работе с сайтом:
 =====================
-* На главной странице - повтор текста этого README файла
 * Создавать или редактировать записи в базе данных возможно только через admin панель
 * Чтобы наполнить заказ товарами, необходимо создать _Order_, затем через создание _OrderPosition_ привязать товары к нужному заказу
 ----------------------------------
-Список и описание url:
+Обратите внимание, что все endpoints имеют префикс /api/v1. Список и описание url:
 =====================
-* /item/<int> - Возвращает HTML с информацией о товаре и кнопкой "Buy"
-* /buy/<int> - Возвращает JSON объекта stripe.checkout.Session, необходимый для перехода на платежную форму Stripe для оплаты _товара_
-* /order/<int> - Возвращает HTML с информацией о заказе и кнопкой "Buy" или "Payment Intent". При нажатии на "Buy" произойдет редирект на платежную форму Stripe, созданную с помощью stripe.checkout.Session. При нажатии на "Payment Intent" появится платёжная форма, созданная с помощью stripe.PaymentIntent и clientSecret
-* /order/buy/<int> Возвращает JSON объекта stripe.checkout.Session, необходимый для перехода на платежную форму Stripe для оплаты _заказа_
-* intent/<int:pk> Возвращает JSON с clientSecret, что необходимо для создания платёжной формы через stripe.PaymentIntent для оплаты _заказа_
-* pub_key/ Возвращает JSON с {'pub_key': <PUB_KEY>} где PUB_KEY это публичный ключ с Stripe.dashboard
-* success/ или success/<int> или intent/<int>/status - Возвращает HTML с информацией после оплаты
-* intent/<int>/status/success - При обращении обновляет объект _Order_ для оплаченного заказа, присваивая ему статус **Оплаченного заказа**
+* /api/v1 - Главная страница - повтор текста этого README файла
+* /api/v1/item/<int:pk> - Возвращает HTML с информацией о товаре и кнопкой "Buy"
+* /api/v1/buy/<int:pk> - Возвращает JSON объекта stripe.checkout.Session, необходимый для перехода на платежную форму Stripe для оплаты _товара_
+* /api/v1/order/<int:pk> - Возвращает HTML с информацией о заказе и кнопкой "Buy" или "Payment Intent". При нажатии на "Buy" произойдет редирект на платежную форму Stripe, созданную с помощью stripe.checkout.Session. При нажатии на "Payment Intent" появится платёжная форма, созданная с помощью stripe.PaymentIntent и clientSecret
+* /api/v1/order/buy/<int:pk> Возвращает JSON объекта stripe.checkout.Session, необходимый для перехода на платежную форму Stripe для оплаты _заказа_
+* /api/v1/intent/<int:pk> Возвращает JSON с clientSecret, что необходимо для создания платёжной формы через stripe.PaymentIntent для оплаты _заказа_
+* /api/v1/pub_key/ Возвращает JSON с {'pub_key': <PUB_KEY>} где PUB_KEY это публичный ключ с Stripe.dashboard
+* /api/v1/success/ или success/<int:pk> или intent/<int:pk>/status - Возвращает HTML с информацией после оплаты
+* /api/v1/intent/<int:pk>/status/success - При обращении обновляет объект _Order_ для оплаченного заказа, присваивая ему статус **Оплаченного заказа**
+* /api/v1/catalog/ - Постраничный просмотр списка Item, для переключения страниц необходимо использовать запросы в url {Например: /api/v1/catalog/?page=2}
+* /api/v1/scrap-it/ - Скрапнуть данные в таблицу Item
+* /api/v1/clear-items/ - Очистить таблицу Item
 ---
 Автотесты не написаны
 ---
-Стили не написаны
+

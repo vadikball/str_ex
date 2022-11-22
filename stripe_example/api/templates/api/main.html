@@ -4,33 +4,44 @@
     <h1>
         Тестовая интеграция с Stripe
     </h1>
+    <h1>Как развернуть сервис:</h1>
     <p>
-        При развёртывании приложения с помощью Dockerfile в репозитории, обратите внимание, что нужно передать аргументы DJANGO_SECRET, PUB_KEY, STRIPE_SECRET_KEY.
+        С помощью docker-compose файлов в репозитории:
+    </p>
+    <ul>
+        <li>Поместить файл .db.env в корень репозитория рядом с docker-compose файлами</li>
+        <li>Поместить файл .env в папку /stripe_example рядом с файлом manage.py</li>
+        <li>Заполнить файлы переменных окружения, как указано в файлах-примерах db.env.sample и dj.env.sample</li>
+        <li>Запустить докер в корне репозитория командой docker-compose up --build</li>
+        <li>Для запуска dev версии докера нужно поместить ваши ключи в файлы-примеры переменных окружения и запустить докер docker-compose -f docker-compose.dev.yml up --build</li>
+        <li>Также, необходимо после запуска контейнера создать superuser -> docker exec -it {имя контейнера django сервиса} bash -> python3 manage.py createsuperuser.</li>
+    </ul>
+    <p>
+        Первый билд загружается не быстро, благодарю вас за терпение.
     </p>
     <p>
-        Также, необходимо провести миграцию после запуска контейнера и создать superuser.
-    </p>
-    <p>
-        PUB_KEY и STRIPE_SECRET_KEY - Пара ключей с Stripe.dashboard
+        PUB_KEY и STRIPE_SECRET_KEY - Пара ключей с Stripe.dashboard, APP_URL - url вебсервиса, используется для генерации сссылки возврата из платежной формы, DJANGO_SECRET - ключ для приложения django
     </p>
     <h1>При работе с сайтом:</h1>
     <ul>
-        <li>На главной странице - повтор текста этого README файла</li>
         <li>Создавать или редактировать записи в базе данных возможно только через admin панель</li>
         <li>Чтобы наполнить заказ товарами, необходимо создать Order, затем через создание OrderPosition привязать товары к нужному заказу</li>
     </ul>
-    <h1>Список и описание url:</h1>
+    <h1>Обратите внимание, что все endpoints имеют префикс /api/v1. Список и описание url:</h1>
     <ul>
-        <li>/item/ - Возвращает HTML с информацией о товаре и кнопкой "Buy"</li>
-        <li>/buy/ - Возвращает JSON объекта stripe.checkout.Session, необходимый для перехода на платежную форму Stripe для оплаты товара</li>
-        <li>/order/ - Возвращает HTML с информацией о заказе и кнопкой "Buy" или "Payment Intent". При нажатии на "Buy" произойдет редирект на платежную форму Stripe, созданную с помощью stripe.checkout.Session. При нажатии на "Payment Intent" появится платёжная форма, созданная с помощью stripe.PaymentIntent и clientSecret</li>
-        <li>/order/buy/ Возвращает JSON объекта stripe.checkout.Session, необходимый для перехода на платежную форму Stripe для оплаты заказа</li>
-        <li>intent/int:pk Возвращает JSON с clientSecret, что необходимо для создания платёжной формы через stripe.PaymentIntent для оплаты заказа</li>
-        <li>pub_key/ Возвращает JSON с {'pub_key': PUB_KEY} где PUB_KEY это публичный ключ с Stripe.dashboard</li>
-        <li>success/ или success/ или intent//status - Возвращает HTML с информацией после оплаты</li>
-        <li>intent//status/success - При обращении обновляет объект Order для оплаченного заказа, присваивая ему статус Оплаченного заказа</li>
+        <li>/api/v1 - Главная страница - повтор текста этого README файла</li>
+        <li>/api/v1/item/{int:pk} - Возвращает HTML с информацией о товаре и кнопкой "Buy"</li>
+        <li>/api/v1/buy/{int:pk} - Возвращает JSON объекта stripe.checkout.Session, необходимый для перехода на платежную форму Stripe для оплаты товара</li>
+        <li>/api/v1/order/{int:pk} - Возвращает HTML с информацией о заказе и кнопкой "Buy" или "Payment Intent". При нажатии на "Buy" произойдет редирект на платежную форму Stripe, созданную с помощью stripe.checkout.Session. При нажатии на "Payment Intent" появится платёжная форма, созданная с помощью stripe.PaymentIntent и clientSecret</li>
+        <li>/api/v1/order/buy/{int:pk} Возвращает JSON объекта stripe.checkout.Session, необходимый для перехода на платежную форму Stripe для оплаты заказа</li>
+        <li>/api/v1/intent/{int:pk} Возвращает JSON с clientSecret, что необходимо для создания платёжной формы через stripe.PaymentIntent для оплаты заказа</li>
+        <li>/api/v1/pub_key/{int:pk} Возвращает JSON с {'pub_key': PUB_KEY} где PUB_KEY это публичный ключ с Stripe.dashboard</li>
+        <li>/api/v1/success/ или success/{int:pk} или intent/{int:pk}/status - Возвращает HTML с информацией после оплаты</li>
+        <li>/api/v1/intent/{int:pk}/status/success - При обращении обновляет объект Order для оплаченного заказа, присваивая ему статус Оплаченного заказа</li>
+        <li>/api/v1/catalog/ - Постраничный просмотр списка Item, для переключения страниц необходимо использовать запросы в url {Например: /api/v1/catalog/?page=2}</li>
+        <li>/api/v1/scrap-it/ - Скрапнуть данные в таблицу Item</li>
+        <li>/api/v1/clear-items/ - Очистить таблицу Item</li>
     </ul>
     <h1>Автотесты не написаны</h1>
-    <h1>Стили не написаны</h1>
 </div>
 {% endblock %}
