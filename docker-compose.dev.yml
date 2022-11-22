@@ -7,6 +7,13 @@ services:
     env_file: ./stripe_example/dj.env.sample
     volumes:
       - static_content:/stripe_example/static:rw
+  migration:
+    restart: on-failure
+    image: stripe_example
+    command: python3 manage.py migrate
+    env_file: ./stripe_example/dj.env.sample
+    depends_on:
+      - static
   database:
     image: postgres
     env_file: db.env.sample
@@ -14,8 +21,6 @@ services:
       - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    depends_on:
-      - static
   web:
     image: stripe_example
     env_file: ./stripe_example/dj.env.sample

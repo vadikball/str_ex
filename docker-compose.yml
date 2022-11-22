@@ -3,18 +3,22 @@ services:
   static:
     build: ./stripe_example
     image: stripe_example
-    command: sh -c "sudo chown -R $USER $(pwd)
-      && python3 manage.py collectstatic -c --no-input"
+    command: sh collect_static.sh
     env_file: ./stripe_example/.env
     volumes:
       - static_content:/stripe_example/static:rw
+  migration:
+    restart: on-failure
+    image: stripe_example
+    command: python3 manage.py migrate
+    env_file: ./stripe_example/.env
+    depends_on:
+      - static
   database:
     image: postgres
     env_file: .db.env
     volumes:
       - pgdata:/var/lib/postgresql/data
-    depends on:
-      - static
   web:
     image: stripe_example
     env_file: ./stripe_example/.env
@@ -34,3 +38,4 @@ services:
       - "80:80"
 volumes:
   static_content:
+  pgdata:
